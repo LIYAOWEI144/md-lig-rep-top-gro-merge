@@ -1,0 +1,4 @@
+interface:
+  display_name: "GROMACS Receptor-Ligand Merge"
+  short_description: "Merge receptor and ligand GRO/TOP files safely"
+  default_prompt: "Merge my receptor and ligand GROMACS topology and coordinate files, ask where to write the output package, preserve reproducible scripts, and validate it with grompp."
