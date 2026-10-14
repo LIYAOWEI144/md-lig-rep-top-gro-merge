@@ -36,3 +36,30 @@ Warnings should be reviewed rather than suppressed. `-maxwarn 0` is intentional
 for a validation gate. A successful output `.tpr` verifies that GROMACS can
 resolve the topology and coordinate count; it does not prove the physical model
 is equilibrated or production ready.
+
+## Include Closure and Solvated Systems
+
+- Inspect quoted includes transitively, not only the top-level `.top`. Record
+  every file that supplies atom types, bonded defaults, molecule types,
+  restraints, water, and ions.
+- Type directives (`[ atomtypes ]`, `[ bondtypes ]`, `[ angletypes ]`, and
+  `[ dihedraltypes ]`) must be read before a `[ moleculetype ]` definition.
+  A supplement for an unusual receptor atom type therefore belongs after the
+  force field and before water/protein/ligand molecule definitions.
+- A coordinate file produced by `gmx solvate` needs a compatible `SOL`
+  definition. A topology that lists `SOL` without including its water model is
+  incomplete.
+- After `gmx genion`, define only the ion molecule types that occur in the
+  coordinate file and `[ molecules ]`. Do not include a broad ion file if it
+  references atom types absent from a reduced force-field conversion.
+
+## Restraints and Command Handoff
+
+- A generated ligand position-restraint file is inert until conditionally
+  included by `LIG.itp`.
+- Keep protein and ligand restraint macros independent whenever possible. If a
+  restraint table uses a symbolic constant, its MDP `define` line must assign a
+  numerical value whenever that table is active.
+- Before downstream equilibration/production, audit the user command file.
+  Start `grompp` without `-maxwarn`; preserve the exact command and explain any
+  necessary replacement in a Chinese text review.
